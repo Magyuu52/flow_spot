@@ -60,7 +60,7 @@ ja:
         follower: :activerecord.models.follower  #g
 
       user:
-        email: Eメール  #g
+        email: メールアドレス  #g
         experience: 経験  #g
         favorites: お気に入り  #g
         followers: フォロワー  #g
@@ -70,6 +70,7 @@ ja:
         introduction: 導入  #g
         name: 名前  #g
         password: パスワード  #g
+        password_confirm: 確認用パスワード  #g
         posts: 投稿  #g
         relationships: 人間関係  #g
         reverse_of_relationships: 関係の逆転  #g
