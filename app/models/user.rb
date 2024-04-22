@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   EMAIL_REGEXP = /\A[a-zA-Z0-9.!\#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\z/
-  VALID_PASSWORD_REGEX = /\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{6,12}+\z/i
+  VALID_PASSWORD_REGEX = /\A(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[\d])\w{6,12}\z/
 
   validates :name, { presence: true, length: { minimum: 1, maximum: 20 } }
   validates :introduction, length: { maximum: 100 }
@@ -8,6 +8,7 @@ class User < ApplicationRecord
   validates :password, presence: true, format: { with: VALID_PASSWORD_REGEX, message: "は半角6~12文字英大文字・小文字・数字それぞれ1文字以上含む必要があります" }
   validate :check_password
   has_one_attached :image
+  validates :image, blob: { content_type: :image }
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
