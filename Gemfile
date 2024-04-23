@@ -54,6 +54,7 @@ gem "dotenv-rails"
 gem "geocoder"
 gem 'activestorage-validator'
 gem "i18n_generators"
+gem 'faker'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -62,7 +63,6 @@ group :development, :test do
   gem 'letter_opener_web'
   gem 'rspec-rails'
   gem 'factory_bot_rails'
-  gem 'faker'
 end
 
 group :development do
