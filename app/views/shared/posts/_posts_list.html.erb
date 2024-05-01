@@ -1,4 +1,4 @@
-<h3>スポット件数: <%= posts_count %>件</h3>
+<h3 class="mt-4">スポット件数: <%= posts_count %>件</h3>
 <div class="d-flex justify-content-between align-items-center condition-btn-area">
   <%= link_to '新着順', posts_path(latest: "true"), class:"#{ "selected-condition" if params[:latest] }" %>
   <span class="separator"></span>

@@ -11,7 +11,7 @@
           <h4>FLOW SPOTはパルクールのスポットを検索・投稿するアプリケーションです。</h4>
           <p>パルクールは主に「スポット」と呼ばれる周囲の環境を利用して練習を行います。どのような環境でも自由にできることを前提としているため、スポットに条件はありません。街中・公園・森・岩場など、いかなる環境もスポットになります。しかし実際には、どんな場所がスポットになるのかがイメージしづらく、屋外での練習はハードルが高いことがあります。FOLW SPOTでは、みんなの投稿から新たなスポットを見つけたり、あなたの身近にあるスポットを投稿して共有することが可能となります。</p>
           <div class="text-center btn-area-sm">
-            <h5 class="mb-4">FLOW SPOTを使って、お気に入りのスポットを探しましょう！<h5>
+            <h5 class="mb-4">FLOW SPOTを使って、お気に入りのスポットを探しましょう！</h5>
             <% if @current_user %>
               <%= link_to "新規スポットを投稿する", new_post_path, class:"btn" %>
             <% else %>
@@ -24,11 +24,11 @@
         </div>
       </div>
       <div class="text-center btn-area-lg mt-4">
-        <h5>FLOW SPOTを使って、お気に入りのスポットを探しましょう！<h5>
+        <h5>FLOW SPOTを使って、お気に入りのスポットを探しましょう！</h5>
         <% if @current_user %>
-          <%= link_to "新規スポットを投稿する", new_post_path, class:"btn w-50" %>
+          <%= link_to "新規スポットを投稿する", new_post_path, class:"btn" %>
         <% else %>
-          <%= link_to "新規登録してスポットを投稿する", new_post_path, class:"btn w-50" %>
+          <%= link_to "新規登録してスポットを投稿する", new_user_path, class:"btn" %>
         <% end %>
       </div>
       <div class="text-center mt-5">

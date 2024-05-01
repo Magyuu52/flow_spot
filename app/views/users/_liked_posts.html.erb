@@ -23,8 +23,15 @@
         <div class="col-md-2">
           <time><%= l post.created_at, format: :long %></time>
         </div>
+        <div class="post-image-large mb-3">
+          <% if post.spot_image.attached? %>
+            <%= image_tag(rails_blob_path(post.spot_image), class:"img-fluid") %>
+          <% else %>
+            <%= image_tag("default_spot.jpg", class:"img-fluid") %>
+          <% end %>
+        </div>
         <div class="col-md-10">
-          <div class="post-item">
+          <div class="post-image-small">
             <% if post.spot_image.attached? %>
               <%= image_tag(rails_blob_path(post.spot_image), class:"img-fluid") %>
             <% else %>
@@ -59,7 +66,7 @@
                 <% end %>
               <% end %>
             </div>
-            <div class="d-flex flex-column">
+            <div class="btn-area-large text-center">
               <% if current_user %>
                 <% if post.liked?(current_user) %>
                   <%= link_to "いいね済み", post_likes_path(post.id), data: { "turbo-method": :delete }, class:"btn-1 text-center" %>
@@ -72,6 +79,18 @@
               <%= link_to "スポット詳細へ", post_path(post), class:"btn-1 mt-1" %>
             </div>
           </div>
+        </div>
+        <div class="btn-area-small text-center">
+          <% if current_user %>
+            <% if post.liked?(current_user) %>
+              <%= link_to "いいね済み", post_likes_path(post.id), data: { "turbo-method": :delete }, class:"btn-1 text-center" %>
+            <% else %>
+              <%= link_to "いいねする", post_likes_path(post.id), data: { "turbo-method": :post }, class:"btn-2 text-center" %>
+            <% end %>
+          <% else %>
+            <%= link_to "いいねする", post_likes_path(post.id), data: { "turbo-method": :post }, class:"btn-2 text-center" %>
+          <% end %>
+          <%= link_to "スポット詳細へ", post_path(post), class:"btn-1 ms-1" %>
         </div>
       </div>
     </div>

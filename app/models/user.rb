@@ -8,7 +8,7 @@ class User < ApplicationRecord
   validates :password, presence: true, format: { with: VALID_PASSWORD_REGEX, message: "は半角6~12文字英大文字・小文字・数字それぞれ1文字以上含む必要があります" }
   validate :check_password
   has_one_attached :image
-  validates :image, blob: { content_type: :image }
+  validates :image, blob: { content_type: :image, size_range: 0..5.megabytes }
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy

@@ -6,9 +6,9 @@
       <%= link_to "スポットを投稿する", new_post_path, class:"top-btn-new" %>
     <% else %>
       <%= link_to "新規登録してスポットを投稿する", new_user_path, class:"top-btn-new" %>
-      <div class="d-flex footer-btn-area">
+      <div class="footer-btn-area">
           <%= link_to "ログインはこちら", login_path, class:"top-btn me-4" %>
-          <%= link_to "ゲストログインはこちら", login_path, class:"top-btn" %>
+          <%= link_to "ゲストログインはこちら", guest_login_path, data: { turbo_method: :post }, class:"top-btn" %>
       </div>
     <% end %>
     <section id="search-form">
@@ -39,7 +39,7 @@
     <div class="tab-content row justify-content-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
       <!-- Post List 1 -->
         <div role="tabpanel" class="col-lg-9 tab-pane fade show active" id="table-1">
-          <%= render 'shared/home/posts', posts: @latest_posts,current_user: @current_user %>
+          <%= render 'shared/home/posts', posts: @latest_posts, current_user: @current_user %>
           <%= link_to '新着投稿をもっと見る', posts_path(latest: "true"), class:"btn-3 mt-5" %>
         </div>
       <!-- End Post List 1 -->

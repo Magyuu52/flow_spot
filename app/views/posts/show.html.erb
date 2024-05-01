@@ -37,7 +37,7 @@
           <div id="map"></div>
         </div>
       </div>
-      <div class="d-flex mt-3 align-items-center">
+      <div class="post-likes-area mt-3">
         <p class="me-5 fs-4">いいね数: <%= @post.likes_count %></p>
         <% if @current_user && @post.liked?(@current_user) %>
           <%= link_to "いいね済み", post_likes_path(@post.id), data: { "turbo-method": :delete }, class:"btn-1 ms-4" %>

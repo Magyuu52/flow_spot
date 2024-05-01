@@ -44,12 +44,14 @@ ja:
         content: コンテンツ  #g
         flow_video_attachment: :activerecord.models.flow_video_attachment  #g
         flow_video_blob: :activerecord.models.flow_video_blob  #g
+        flow_video: フロー動画
         latitude: 緯度  #g
         likes: いいね！  #g
         longitude: 経度  #g
         price: 価格  #g
         spot_image_attachment: :activerecord.models.spot_image_attachment  #g
         spot_image_blob: :activerecord.models.spot_image_blob  #g
+        spot_image: スポット画像
         spot_name: スポット名  #g
         title: タイトル  #g
         user: :activerecord.models.user  #g
@@ -67,6 +69,7 @@ ja:
         followings: フォロー中  #g
         image_attachment: :activerecord.models.image_attachment  #g
         image_blob: :activerecord.models.image_blob  #g
+        image: アイコン画像
         introduction: 導入  #g
         name: 名前  #g
         password: パスワード  #g
