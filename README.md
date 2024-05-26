@@ -16,6 +16,7 @@
 ![Static Badge](https://img.shields.io/badge/PostgreSQL-%234169E1?style=for-the-badge&logo=PostgreSQL&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Amazon%20aws-black?style=for-the-badge&logo=Amazon%20aws)
 ![Static Badge](https://img.shields.io/badge/Amazon%20S3-%23569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Docker-black?style=for-the-badge&logo=Docker)
 ![Static Badge](https://img.shields.io/badge/Heroku-%23430098?style=for-the-badge&logo=Heroku&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Google%20Maps-%234285F4?style=for-the-badge&logo=Google%20Maps&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Gmail-%23EA4335?style=for-the-badge&logo=Gmail&logoColor=white)
@@ -118,4 +119,4 @@
 今回ポートフォリオとしてのアプリケーション作成ということで、自身の理解力を試すためにも可能な限りgemを使わずに機能を実装した。例えば、ユーザー機能を実装する際によく使われるgemである「Device」使用せずにログイン機能や新規登録機能を作成した。独自に作成したメソッドやバリデーションによって問題なく機能してくれたので、一定以上の理解をしていることを実感できて自信がついた。とはいえgemを使うことで開発時間の短縮にも繋がるので、複雑になることが想定される機能を実装する際には積極的にgemを導入することを検討するべきである。
 
 ### インフラ関連
-デプロイをするためにheroku、画像と動画を保存するためにawsのS3を採用した。これらのサービスはカリキュラム受講時に使用していたものだが、改めて使い方やアプリケーションとの連携方法を何も見ないで実装しようとするとつまづくことが何度かあった。またこうしたインフラ関連の導入には個人的に苦手意識があるので、慣れていくためにも今後はさらに導入が多少複雑となるDockerやcl/ci等の練習も使っていくことが重要と判断した。
+デプロイをするためにheroku、画像と動画を保存するためにawsのS3を採用した。これらのサービスはカリキュラム受講時に使用していたものだが、改めて使い方やアプリケーションとの連携方法を何も見ないで実装しようとするとつまづくことが何度かあった。また、今回後から開発環境をDockerによる構築へ変更した。想定していた以上にスムーズに環境構築から立ち上げまでが成功したので、自分自身の技術的成長を実感できた。
