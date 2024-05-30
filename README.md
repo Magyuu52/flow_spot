@@ -9,6 +9,7 @@
 ![Static Badge](https://img.shields.io/badge/HTML5-%23E34F26?style=for-the-badge&logo=HTML5&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=CSS3)
 ![Static Badge](https://img.shields.io/badge/JavaScript-black?style=for-the-badge&logo=JavaScript)
+![Static Badge](https://img.shields.io/badge/React-%2361DAFB?style=for-the-badge&logo=React&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Ruby%20on%20Rails-%23D30001?style=for-the-badge&logo=Ruby%20on%20Rails)
 ![Static Badge](https://img.shields.io/badge/Ruby-%23CC342D?style=for-the-badge&logo=Ruby)
 ![Static Badge](https://img.shields.io/badge/Rspec-%23CC342D?style=for-the-badge)
