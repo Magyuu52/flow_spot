@@ -15,9 +15,9 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params.require(:user).permit(:name, :email, :password, :password_confirm, :introduction))
+    @user = User.new(registration_params)
     if @user.save
-      session[:user_id] = @user.id
+      log_in(@user)
       flash[:notice] = "ユーザーの新規登録に成功しました"
       redirect_to root_path
     else
@@ -26,9 +26,9 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
-    @user_posts_count = @user.posts.count
-    @user_liked_posts = Like.where(user_id: @user.id)
+    @user                   = User.find(params[:id])
+    @user_posts_count       = @user.posts.count
+    @user_liked_posts       = @user.liked_posts
     @user_liked_posts_count = @user_liked_posts.count
   end
 
@@ -38,9 +38,9 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    if @current_user.update(params.require(:user).permit(:name, :introduction, :password, :password_confirm, :experience, :image))
+    if @user.update(profile_params)
       flash[:notice] = "アカウント情報を更新しました"
-      redirect_to action: :show
+      redirect_to user_path(@user)
     else
       render "edit", status: :unprocessable_entity
     end
@@ -50,9 +50,9 @@ class UsersController < ApplicationController
   end
 
   def login
-    @user = User.find_by(email: params[:email], password: params[:password]) 
+    @user = User.find_by(email: params[:email], password: params[:password])
     if @user
-      session[:user_id] = @user.id
+      log_in(@user)
       flash[:notice] = "ログインに成功しました"
       redirect_to root_path
     else
@@ -62,13 +62,13 @@ class UsersController < ApplicationController
   end
 
   def logout
-    session[:user_id] = nil
+    log_out
     flash[:notice] = "ログアウトに成功しました"
     redirect_to root_path
   end
 
   def search
-    @searched_users = User.search(params[:keyword])
+    @searched_users       = User.search(params[:keyword])
     @searched_users_count = @searched_users.where.not(id: @current_user.id).count
   end
 
@@ -77,5 +77,15 @@ class UsersController < ApplicationController
 
     flash[:alert] = "アクセス権限がありません"
     redirect_to root_path
+  end
+
+  private
+
+  def registration_params
+    params.require(:user).permit(:name, :email, :password, :password_confirm, :introduction)
+  end
+
+  def profile_params
+    params.require(:user).permit(:name, :introduction, :password, :password_confirm, :experience, :image)
   end
 end

@@ -20,8 +20,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(build_post_params_with_resized_image)
-    @post.user_id = @current_user.id
-    @post.user_name = @current_user.name
+    @post.assign_author(@current_user)
     if @post.save
       flash[:notice] = "新規投稿の作成に成功しました"
       redirect_to :posts
@@ -31,8 +30,8 @@ class PostsController < ApplicationController
   end
 
   def show
-    @post = Post.find(params[:id])
-    @likes_count = Like.where(post_id: @post.id).count
+    @post        = Post.find(params[:id])
+    @likes_count = @post.likes_count
   end
 
   def edit

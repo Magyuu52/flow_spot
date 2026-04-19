@@ -35,6 +35,10 @@ class User < ApplicationRecord
     followings.include?(user)
   end
 
+  def liked_posts
+    Post.joins(:likes).where(likes: { user_id: id })
+  end
+
   def self.search(search)
     return all if search.blank?
 

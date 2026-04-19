@@ -21,8 +21,14 @@ class Post < ApplicationRecord
     return User.find_by(id: self.user_id)
   end
 
+  # 投稿者情報のセットをモデルの責務として集約する
+  def assign_author(user)
+    self.user_id   = user.id
+    self.user_name = user.name
+  end
+
   def likes_count
-    return Like.where(post_id: self.id).count
+    likes.count
   end
 
   def liked?(user)
