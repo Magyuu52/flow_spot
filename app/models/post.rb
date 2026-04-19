@@ -30,13 +30,11 @@ class Post < ApplicationRecord
   end
 
   def self.search(search)
-    if search != ""
-      keyword    = "%#{search}%"
-      conditions = ["title LIKE(?) OR address LIKE(?) OR user_name LIKE(?)", keyword, keyword, keyword]
-      Post.where(conditions)
-    else
-      Post.all
-    end
+    return all if search.blank?
+
+    keyword    = "%#{search}%"
+    conditions = ["title LIKE(?) OR address LIKE(?) OR user_name LIKE(?)", keyword, keyword, keyword]
+    where(conditions)
   end
 
 private

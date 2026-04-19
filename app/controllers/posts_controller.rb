@@ -4,15 +4,13 @@ class PostsController < ApplicationController
   before_action :authenticate_user, {except: [:index, :show]}
   before_action :ensure_correct_user, {only: [:edit, :update, :destroy]}
 
+  SORT_SCOPES = {
+    "old"            => :old,
+    "most_favorited" => :most_favorited,
+  }.freeze
+
   def index
-    @posts = Post.latest
-    if params[:old]
-      @posts = Post.old
-    elsif params[:most_favorited]
-      @posts = Post.most_favorited
-    else
-      @posts = Post.latest
-    end
+    @posts       = sorted_posts
     @posts_count = @posts.count
   end
   
@@ -65,13 +63,19 @@ class PostsController < ApplicationController
 
   def ensure_correct_user
     @post = Post.find(params[:id])
-    if @post.user_id != @current_user.id
-      flash[:alret] = "アクセス権限がありません"
-      redirect_to root_path
-    end
+    return if @post.user_id == @current_user.id
+
+    flash[:alert] = "アクセス権限がありません"
+    redirect_to root_path
   end
 
   private
+
+  def sorted_posts
+    sort_key   = SORT_SCOPES.keys.find { |key| params[key] }
+    scope_name = SORT_SCOPES.fetch(sort_key, :latest)
+    Post.public_send(scope_name)
+  end
 
   def post_params
     params.require(:post).permit(:title, :address, :content, :spot_image, :flow_video)

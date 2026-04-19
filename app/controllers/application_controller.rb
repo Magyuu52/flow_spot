@@ -8,16 +8,16 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user
-    if @current_user == nil
-      flash[:alret] = "ログインが必要です"
-      redirect_to('/login')
-    end
+    return if @current_user
+
+    flash[:alert] = "ログインが必要です"
+    redirect_to "/login"
   end
 
   def forbid_login_user
-    if @current_user
-      flash[:alret] = "すでにログイン済みです"
-      redirect_to root_path
-    end
+    return unless @current_user
+
+    flash[:alert] = "すでにログイン済みです"
+    redirect_to root_path
   end
 end

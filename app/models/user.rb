@@ -36,17 +36,15 @@ class User < ApplicationRecord
   end
 
   def self.search(search)
-    if search != ""
-      User.where('name LIKE(?)', "%#{search}%")
-    else
-      User.all
-    end
+    return all if search.blank?
+
+    where("name LIKE(?)", "%#{search}%")
   end
 
   def check_password
-    if password_confirm != password
-      errors.add(:password_confirm, "が一致しません。正しく入力してください")
-    end
+    return if password == password_confirm
+
+    errors.add(:password_confirm, "が一致しません。正しく入力してください")
   end
 
   # バリデーション（英大文字・英小文字・数字を各1文字以上含む）を確実に満たすパスワードを生成する
