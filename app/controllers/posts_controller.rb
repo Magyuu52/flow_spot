@@ -21,7 +21,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(image_resize(post_params))
+    @post = Post.new(build_post_params_with_resized_image)
     @post.user_id = @current_user.id
     @post.user_name = @current_user.name
     if @post.save
@@ -43,7 +43,7 @@ class PostsController < ApplicationController
 
   def update
     @post = Post.find(params[:id])
-    if @post.update(image_resize(post_params))
+    if @post.update(build_post_params_with_resized_image)
       flash[:notice] = "「#{@post.title}」の情報を更新しました"
       redirect_to :posts
     else
@@ -77,10 +77,20 @@ class PostsController < ApplicationController
     params.require(:post).permit(:title, :address, :content, :spot_image, :flow_video)
   end
 
-  def image_resize(params)
-    if params[:spot_image]
-      params[:spot_image].tempfile = ImageProcessing::MiniMagick.source(params[:spot_image].tempfile).resize_to_fill(1627, 1084.5).call
-    end
-    params
+  # spot_image が添付されている場合のみリサイズ済みパラメータを返す
+  # 引数の post_params を直接書き換えず、tempfile のみ差し替えた形で返す
+  def build_post_params_with_resized_image
+    return post_params unless post_params[:spot_image]
+
+    resized_file = resize_image(post_params[:spot_image].tempfile)
+    post_params[:spot_image].tempfile = resized_file
+    post_params
+  end
+
+  def resize_image(tempfile)
+    ImageProcessing::MiniMagick
+      .source(tempfile)
+      .resize_to_fill(1627, 1084.5)
+      .call
   end
 end

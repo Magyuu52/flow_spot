@@ -48,4 +48,12 @@ class User < ApplicationRecord
       errors.add(:password_confirm, "が一致しません。正しく入力してください")
     end
   end
+
+  # バリデーション（英大文字・英小文字・数字を各1文字以上含む）を確実に満たすパスワードを生成する
+  def self.generate_guest_password
+    base      = SecureRandom.alphanumeric(10) # ランダムな英数字10文字（英大文字を含む可能性あり）
+    lowercase = [*"a".."z"].sample            # バリデーション要件: 英小文字を確実に含める
+    digit     = [*"0".."9"].sample            # バリデーション要件: 数字を確実に含める
+    base + lowercase + digit
+  end
 end
