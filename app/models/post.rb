@@ -43,6 +43,18 @@ class Post < ApplicationRecord
     where(conditions)
   end
 
+  # 現在のスコープ（ActiveRecord::Relation）をブロックに渡し、
+  # 追加条件を合成して返すスコープ合成ヘルパー。
+  # ブロックが渡されない場合は全件スコープをそのまま返す。
+  #
+  # 例:
+  #   Post.with_filter { |posts| posts.where(user_id: id) }
+  #   Post.with_filter { |posts| posts.latest.limit(10) }
+  #   Post.latest.merge(Post.with_filter { |posts| posts.where(address: "東京") })
+  def self.with_filter(&block)
+    block_given? ? yield(all) : all
+  end
+
 private
   def self.sorted_by_likes_count
     posts_with_liked_users = includes(:liked_users)

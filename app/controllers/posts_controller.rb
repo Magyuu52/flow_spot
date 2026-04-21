@@ -73,7 +73,7 @@ class PostsController < ApplicationController
   def sorted_posts
     sort_key   = SORT_SCOPES.keys.find { |key| params[key] }
     scope_name = SORT_SCOPES.fetch(sort_key, :latest)
-    Post.public_send(scope_name)
+    Post.with_filter { |posts| posts.public_send(scope_name) }
   end
 
   def post_params
