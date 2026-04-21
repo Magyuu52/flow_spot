@@ -56,8 +56,8 @@ class Post < ApplicationRecord
   end
 
 private
+  # sort_by のキーをマイナスにすることで降順ソートを表現し、reverse の追加パスを省く
   def self.sorted_by_likes_count
-    posts_with_liked_users = includes(:liked_users)
-    posts_with_liked_users.sort_by { |post| post.liked_users.size }.reverse
+    includes(:liked_users).sort_by { |post| -post.liked_users.size }
   end
 end
