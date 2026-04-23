@@ -18,9 +18,6 @@ class PasswordResetsController < ApplicationController
 
   def edit
     @user = User.find_signed!(params[:token], purpose: "password_reset")
-    rescue ActiveSupport::MessageVerifier::InvalidSignature
-      flash[:alret] = "URLの有効期限が切れています。もう一度申請をお願いします"
-      redirect_to password_reset_path
   end
 
   def update
@@ -29,7 +26,7 @@ class PasswordResetsController < ApplicationController
       flash[:notice] = "パスワードが再設定されました"
       redirect_to login_path
     else
-      flash.now[:alret] = "パスワードの再設定に失敗しました"
+      flash.now[:alert] = "パスワードの再設定に失敗しました"
       render :edit, status: :unprocessable_entity
     end
   end

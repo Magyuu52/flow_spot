@@ -62,10 +62,7 @@ class PostsController < ApplicationController
 
   def ensure_correct_user
     @post = Post.find(params[:id])
-    return if @post.user_id == @current_user.id
-
-    flash[:alert] = "アクセス権限がありません"
-    redirect_to root_path
+    raise AuthorizationError unless @post.user_id == @current_user.id
   end
 
   private
