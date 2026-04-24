@@ -15,8 +15,9 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(registration_params)
-    if @user.save
+    service = Users::RegistrationService.new(params: registration_params)
+    @user   = service.user
+    if service.call
       log_in(@user)
       flash[:notice] = "ユーザーの新規登録に成功しました"
       redirect_to root_path
@@ -50,9 +51,9 @@ class UsersController < ApplicationController
   end
 
   def login
-    @user = User.find_by(email: params[:email], password: params[:password])
-    if @user
-      log_in(@user)
+    service = Users::AuthenticationService.new(email: params[:email], password: params[:password])
+    if service.call
+      log_in(service.user)
       flash[:notice] = "ログインに成功しました"
       redirect_to root_path
     else

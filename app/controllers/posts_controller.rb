@@ -19,8 +19,8 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(build_post_params_with_resized_image)
-    @post.assign_author(@current_user)
+    service = Posts::CreateService.new(user: @current_user, params: post_params)
+    @post   = service.call
     if @post.save
       flash[:notice] = "新規投稿の作成に成功しました"
       redirect_to :posts
@@ -39,8 +39,9 @@ class PostsController < ApplicationController
   end
 
   def update
-    @post = Post.find(params[:id])
-    if @post.update(build_post_params_with_resized_image)
+    @post   = Post.find(params[:id])
+    service = Posts::UpdateService.new(post: @post, params: post_params)
+    if service.call
       flash[:notice] = "「#{@post.title}」の情報を更新しました"
       redirect_to :posts
     else

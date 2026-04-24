@@ -3,17 +3,14 @@ class PasswordResetsController < ApplicationController
   end
 
   def create
-    @user = User.find_by(email: params[:email])
-
-    unless @user
+    service = Users::PasswordResetService.new(email: params[:email])
+    if service.call
+      flash[:notice] = "パスワード再設定申請メールを送りました"
+      redirect_to root_path
+    else
       flash.now[:alert] = "メールアドレスが見つかりませんでした"
       render :new, status: :unprocessable_entity
-      return
     end
-
-    PasswordResetMailer.with(user: @user).reset.deliver_later
-    flash[:notice] = "パスワード再設定申請メールを送りました"
-    redirect_to root_path
   end
 
   def edit
