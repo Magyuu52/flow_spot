@@ -6,9 +6,11 @@ class PostsController < ApplicationController
   before_action :authenticate_user, {except: [:index, :show]}
   before_action :ensure_correct_user, {only: [:edit, :update, :destroy]}
 
-  SORT_SCOPES = {
-    "old"            => :old,
-    "most_favorited" => :most_favorited,
+  # Duck Typing: 各値は「call(scope) に応答できる」ことだけを保証する。
+  # 呼び出し側（sorted_posts）はオブジェクトの種別を知らず、call するだけでよい。
+  SORT_STRATEGIES = {
+    "old"            => Posts::SortStrategies::Old.new,
+    "most_favorited" => Posts::SortStrategies::MostFavorited.new,
   }.freeze
 
   def index
@@ -71,9 +73,9 @@ class PostsController < ApplicationController
   end
 
   def sorted_posts
-    sort_key   = SORT_SCOPES.keys.find { |key| params[key] }
-    scope_name = SORT_SCOPES.fetch(sort_key, :latest)
-    Post.with_filter { |posts| posts.public_send(scope_name) }
+    sort_key = SORT_STRATEGIES.keys.find { |key| params[key] }
+    strategy = SORT_STRATEGIES.fetch(sort_key, Posts::SortStrategies::Latest.new)
+    Post.with_filter { |posts| strategy.call(posts) }
   end
 
   def post_params
