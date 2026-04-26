@@ -17,10 +17,6 @@ class Post < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :liked_users, through: :likes, source: :user
 
-  def user
-    return User.find_by(id: self.user_id)
-  end
-
   # 投稿者情報のセットをモデルの責務として集約する
   def assign_author(user)
     self.user_id   = user.id

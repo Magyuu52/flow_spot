@@ -19,10 +19,6 @@ class User < ApplicationRecord
   has_many :followings, through: :relationships, source: :followed
   has_many :followers, through: :reverse_of_relationships, source: :follower
 
-  def posts
-    return Post.where(user_id: self.id)
-  end
-
   def follow(user_id)
     relationships.create(followed_id: user_id)
   end
