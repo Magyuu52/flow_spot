@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  include OwnerAuthorizable
+
   before_action :authenticate_user, {only: [:edit, :update]}
   before_action :forbid_login_user, {only: [:new, :login_form, :login]}
   before_action :ensure_correct_user, {only: [:edit, :update]}
@@ -73,11 +75,11 @@ class UsersController < ApplicationController
     @searched_users_count = @searched_users.where.not(id: @current_user.id).count
   end
 
-  def ensure_correct_user
-    raise AuthorizationError unless @current_user.id == params[:id].to_i
-  end
-
   private
+
+  def ensure_owner?
+    @current_user.id == params[:id].to_i
+  end
 
   def registration_params
     params.require(:user).permit(:name, :email, :password, :password_confirm, :introduction)

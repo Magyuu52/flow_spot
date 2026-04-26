@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PostsController < ApplicationController
+  include OwnerAuthorizable
+
   before_action :authenticate_user, {except: [:index, :show]}
   before_action :ensure_correct_user, {only: [:edit, :update, :destroy]}
 
@@ -61,12 +63,12 @@ class PostsController < ApplicationController
     @searched_posts_count = @searched_posts.count
   end
 
-  def ensure_correct_user
-    @post = Post.find(params[:id])
-    raise AuthorizationError unless @post.user_id == @current_user.id
-  end
-
   private
+
+  def ensure_owner?
+    @post = Post.find(params[:id])
+    @post.user_id == @current_user.id
+  end
 
   def sorted_posts
     sort_key   = SORT_SCOPES.keys.find { |key| params[key] }
