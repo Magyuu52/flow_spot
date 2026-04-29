@@ -54,4 +54,13 @@ class User < ApplicationRecord
     digit     = [*"0".."9"].sample            # バリデーション要件: 数字を確実に含める
     base + lowercase + digit
   end
+
+  # トークンの有効期限内かどうかを判定する。
+  # Time.current を使うことで config.time_zone（Asia/Tokyo）を尊重し、
+  # Time.now（OS タイムゾーン依存）による 9 時間ズレのリスクを避ける。
+  # Range#cover? は両端との比較のみで判定するため include? より高速。
+  def self.token_still_valid?(issued_at, valid_minutes: 15)
+    valid_window = issued_at..(issued_at + valid_minutes.minutes)
+    valid_window.cover?(Time.current)
+  end
 end
