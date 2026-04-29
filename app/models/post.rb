@@ -31,11 +31,11 @@ class Post < ApplicationRecord
     likes.exists?(user_id: user.id)
   end
 
-  def self.search(search)
-    return all if search.blank?
+  def self.search(condition)
+    return all if condition.blank_keyword?
 
-    keyword    = "%#{search}%"
-    conditions = ["title LIKE(?) OR address LIKE(?) OR user_name LIKE(?)", keyword, keyword, keyword]
+    pattern    = condition.like_pattern
+    conditions = ["title LIKE(?) OR address LIKE(?) OR user_name LIKE(?)", pattern, pattern, pattern]
     where(conditions)
   end
 

@@ -61,7 +61,8 @@ class PostsController < ApplicationController
   end
 
   def search
-    @searched_posts = Post.search(params[:keyword])
+    condition             = PostSearchCondition.new(keyword: params[:keyword]).freeze
+    @searched_posts       = Post.search(condition)
     @searched_posts_count = @searched_posts.count
   end
 
