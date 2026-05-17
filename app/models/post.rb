@@ -3,7 +3,11 @@
 class Post < ApplicationRecord
   scope :latest, -> { order(created_at: :desc) }
   scope :old, -> { order(created_at: :asc) }
-  scope :most_favorited, -> { Post.sorted_by_likes_count }
+  scope :most_favorited, -> {
+    left_joins(:likes)
+      .group("posts.id")
+      .order("COUNT(likes.id) DESC")
+  }
   validates :title, { presence: true, length: { maximum: 30 } }
   validates :content, length: { maximum: 500 }
   validates :address, presence: true
@@ -49,11 +53,5 @@ class Post < ApplicationRecord
   #   Post.latest.merge(Post.with_filter { |posts| posts.where(address: "東京") })
   def self.with_filter(&block)
     block_given? ? yield(all) : all
-  end
-
-private
-  # sort_by のキーをマイナスにすることで降順ソートを表現し、reverse の追加パスを省く
-  def self.sorted_by_likes_count
-    includes(:liked_users).sort_by { |post| -post.liked_users.size }
   end
 end

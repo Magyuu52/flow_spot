@@ -76,7 +76,9 @@ class PostsController < ApplicationController
   def sorted_posts
     sort_key = SORT_STRATEGIES.keys.find { |key| params[key] }
     strategy = SORT_STRATEGIES.fetch(sort_key, Posts::SortStrategies::Latest.new)
-    Post.with_filter { |posts| strategy.call(posts) }
+    base = Post.includes(:user, :likes, :spot_image_attachment,
+                         user: { image_attachment: :blob })
+    Post.with_filter { |posts| strategy.call(posts.merge(base)) }
   end
 
   def post_params
