@@ -11,6 +11,7 @@ class Post < ApplicationRecord
   validates :title, { presence: true, length: { maximum: 30 } }
   validates :content, length: { maximum: 500 }
   validates :address, presence: true
+  validates_with PostRateLimitValidator
   has_one_attached :spot_image
   has_one_attached :flow_video
   validates :spot_image, blob: { content_type: :image }
