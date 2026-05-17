@@ -2,6 +2,7 @@
 
 class PostsController < ApplicationController
   include OwnerAuthorizable
+  owner_resource :post
 
   before_action :authenticate_user, {except: [:index, :show]}
   before_action :ensure_correct_user, {only: [:edit, :update, :destroy]}
@@ -67,11 +68,6 @@ class PostsController < ApplicationController
   end
 
   private
-
-  def ensure_owner?
-    @post = Post.find(params[:id])
-    @post.user_id == @current_user.id
-  end
 
   def sorted_posts
     sort_key = SORT_STRATEGIES.keys.find { |key| params[key] }
