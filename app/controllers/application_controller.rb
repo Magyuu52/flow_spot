@@ -26,8 +26,13 @@ class ApplicationController < ActionController::Base
   private
 
   def handle_authentication_error
-    flash[:alert] = "ログインが必要です"
-    redirect_to "/login"
+    respond_to do |format|
+      format.html do
+        flash[:alert] = "ログインが必要です"
+        redirect_to "/login"
+      end
+      format.json { render json: { error: "ログインが必要です" }, status: :unauthorized }
+    end
   end
 
   def handle_authorization_error

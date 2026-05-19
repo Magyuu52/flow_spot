@@ -4,12 +4,19 @@ class LikesController < ApplicationController
   def create
     @like = Like.new(user_id: @current_user.id, post_id: params[:post_id])
     @like.save
-    redirect_to request.referer 
+    respond_to do |format|
+      format.html { redirect_to request.referer }
+      format.json { render json: { likes_count: @like.post.likes_count, liked: true } }
+    end
   end
 
   def destroy
     @like = Like.find_by(user_id: @current_user.id, post_id: params[:post_id])
     @like.destroy
-    redirect_to request.referer
+    post = Post.find(params[:post_id])
+    respond_to do |format|
+      format.html { redirect_to request.referer }
+      format.json { render json: { likes_count: post.likes_count, liked: false } }
+    end
   end
 end

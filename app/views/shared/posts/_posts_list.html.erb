@@ -9,7 +9,12 @@
 <div class="row">
   <% posts.each do |post| %>
     <div class="col-lg-4 col-md-6">
-      <div class="post-details-top d-flex justify-content-between align-items-center"> 
+      <div class="post-details-top d-flex justify-content-between align-items-center"
+           data-controller="like"
+           data-like-url-value="<%= post_likes_path(post.id) %>"
+           data-like-liked-value="<%= !!current_user && post.liked?(current_user) %>"
+           data-like-count-value="<%= post.likes_count %>"
+           data-like-signed-in-value="<%= !!current_user %>">
         <div class="d-flex align-items-center">
           <%= link_to user_path(post.user) do %>
             <% if post.user.image.attached? %>
@@ -25,21 +30,12 @@
             <time><%= l post.created_at, format: :long %></time>
           </div>
         </div>
-        <% if current_user && post.liked?(current_user) %>
-          <%= link_to post_likes_path(post.id), data: { "turbo-method": :delete } do %>
-            <div class="align-items-center d-flex">
-              <span class="fa fa-thumbs-up fa-lg"></span>
-              <p class="ms-2 fs-4"><%= post.likes_count %></p>
-            </div>
-          <% end %>
-        <% else %>
-          <%= link_to post_likes_path(post.id), data: { "turbo-method": :post } do %>
-            <div class="align-items-center d-flex not-liked">
-              <span class="fa fa-thumbs-up fa-lg"></span>
-              <p class="ms-2 fs-4"><%= post.likes_count %></p>
-            </div>
-          <% end %>
-        <% end %>
+        <a href="#" data-action="click->like#toggle">
+          <div class="align-items-center d-flex<%= ' not-liked' unless current_user && post.liked?(current_user) %>" data-like-target="icon">
+            <span class="fa fa-thumbs-up fa-lg"></span>
+            <p class="ms-2 fs-4" data-like-target="count"><%= post.likes_count %></p>
+          </div>
+        </a>
       </div>
       <div class="spot aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
         <%= link_to post do %>
