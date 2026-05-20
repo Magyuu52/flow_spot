@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_20_000001) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_20_222542) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -91,6 +91,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_20_000001) do
     t.string "password_confirm"
     t.string "provider"
     t.string "uid"
+    t.integer "role", default: 0, null: false
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 

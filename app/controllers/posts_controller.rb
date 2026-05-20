@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 class PostsController < ApplicationController
-  include OwnerAuthorizable
-  owner_resource :post
-
-  before_action :authenticate_user, {except: [:index, :show]}
-  before_action :ensure_correct_user, {only: [:edit, :update, :destroy]}
+  before_action :authenticate_user, except: [:index, :show, :search]
 
   # Duck Typing: 各値は「call(scope) に応答できる」ことだけを保証する。
   # 呼び出し側（sorted_posts）はオブジェクトの種別を知らず、call するだけでよい。
@@ -15,15 +11,18 @@ class PostsController < ApplicationController
   }.freeze
 
   def index
+    authorize Post
     @posts       = sorted_posts
     @posts_count = @posts.count
   end
-  
+
   def new
     @post = Post.new
+    authorize @post
   end
 
   def create
+    authorize Post
     service = Posts::CreateService.new(user: @current_user, params: post_params)
     @post   = service.call
     if @post.save
@@ -35,16 +34,19 @@ class PostsController < ApplicationController
   end
 
   def show
-    @post        = Post.find(params[:id])
+    @post = Post.find(params[:id])
+    authorize @post
     @likes_count = @post.likes_count
   end
 
   def edit
     @post = Post.find(params[:id])
+    authorize @post
   end
 
   def update
-    @post   = Post.find(params[:id])
+    @post = Post.find(params[:id])
+    authorize @post
     service = Posts::UpdateService.new(post: @post, params: post_params)
     if service.call
       flash[:notice] = "「#{@post.title}」の情報を更新しました"
@@ -56,12 +58,14 @@ class PostsController < ApplicationController
 
   def destroy
     @post = Post.find(params[:id])
+    authorize @post
     @post.destroy
     flash[:notice] = "「#{@post.title}」を削除しました"
     redirect_to :posts
   end
 
   def search
+    authorize Post
     condition             = PostSearchCondition.new(keyword: params[:keyword]).freeze
     @searched_posts       = Post.search(condition)
     @searched_posts_count = @searched_posts.count

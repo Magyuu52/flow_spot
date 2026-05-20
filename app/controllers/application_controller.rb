@@ -1,15 +1,23 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  include Pundit::Authorization
+
   before_action :set_current_user
 
   rescue_from AuthenticationError,  with: :handle_authentication_error
   rescue_from AuthorizationError,   with: :handle_authorization_error
+  rescue_from Pundit::NotAuthorizedError, with: :handle_authorization_error
   rescue_from GuestOperationError,  with: :handle_guest_operation_error
   rescue_from ActiveSupport::MessageVerifier::InvalidSignature, with: :handle_invalid_token
 
   def set_current_user
     @current_user = User.find_by(id: session[:user_id])
+  end
+
+  # Pundit は pundit_user（デフォルトで current_user）を認可判定の主体として使う
+  def current_user
+    @current_user
   end
 
   def authenticate_user

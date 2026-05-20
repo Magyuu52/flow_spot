@@ -5,6 +5,8 @@ class User < ApplicationRecord
   EMAIL_REGEXP         = /\A[a-zA-Z0-9.!\#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\z/.freeze
   VALID_PASSWORD_REGEX = /\A(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[\d])\w{6,12}\z/.freeze
 
+  enum role: { general: 0, moderator: 1, admin: 2 }
+
   validates :name, { presence: true, length: { minimum: 1, maximum: 20 } }
   validates :introduction, length: { maximum: 100 }
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: true
@@ -59,6 +61,10 @@ class User < ApplicationRecord
 
   def oauth_user?
     provider.present?
+  end
+
+  def guest?
+    email == Constants::GUEST_EMAIL
   end
 
   # バリデーション（英大文字・英小文字・数字を各1文字以上含む）を確実に満たすパスワードを生成する

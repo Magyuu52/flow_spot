@@ -1,22 +1,23 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  include OwnerAuthorizable
-
-  before_action :authenticate_user, {only: [:edit, :update]}
-  before_action :forbid_login_user, {only: [:new, :login_form, :login]}
-  before_action :ensure_correct_user, {only: [:edit, :update]}
+  before_action :authenticate_user, only: [:edit, :update]
+  before_action :forbid_login_user, only: [:new, :login_form, :login]
 
   def index
+    authorize User
     @users = User.includes(image_attachment: :blob)
     @users_count = @users.count
   end
 
   def new
     @user = User.new
+    authorize @user
   end
 
   def create
+    @user = User.new
+    authorize @user
     service = Users::RegistrationService.new(params: registration_params)
     @user   = service.user
     if service.call
@@ -29,7 +30,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user                   = User.find(params[:id])
+    @user = User.find(params[:id])
+    authorize @user
     @user_posts_count       = @user.posts.count
     @user_liked_posts       = @user.liked_posts
     @user_liked_posts_count = @user_liked_posts.count
@@ -37,10 +39,12 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
+    authorize @user
   end
 
   def update
     @user = User.find(params[:id])
+    authorize @user
     if @user.update(profile_params)
       flash[:notice] = "アカウント情報を更新しました"
       redirect_to user_path(@user)
@@ -71,15 +75,12 @@ class UsersController < ApplicationController
   end
 
   def search
+    authorize User
     @searched_users       = User.search(params[:keyword])
     @searched_users_count = @searched_users.where.not(id: @current_user.id).count
   end
 
   private
-
-  def ensure_owner?
-    @current_user.id == params[:id].to_i
-  end
 
   def registration_params
     params.require(:user).permit(:name, :email, :password, :password_confirm, :introduction)

@@ -4,12 +4,14 @@ module Api
   module V1
     class PostsController < BaseController
       def index
-        posts = Post.includes(:user).order(created_at: :desc)
+        authorize Post
+        posts = policy_scope(Post).includes(:user).order(created_at: :desc)
         render json: posts.map { |post| post_json(post) }
       end
 
       def show
         post = Post.find(params[:id])
+        authorize post
         render json: post_json(post)
       rescue ActiveRecord::RecordNotFound
         render json: { error: "投稿が見つかりません" }, status: :not_found
