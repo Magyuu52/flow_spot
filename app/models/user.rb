@@ -8,8 +8,8 @@ class User < ApplicationRecord
   validates :name, { presence: true, length: { minimum: 1, maximum: 20 } }
   validates :introduction, length: { maximum: 100 }
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: true
-  validates :password, presence: true, format: { with: VALID_PASSWORD_REGEX, message: "は半角6~12文字英大文字・小文字・数字それぞれ1文字以上含む必要があります" }
-  validate :check_password
+  validates :password, presence: true, format: { with: VALID_PASSWORD_REGEX, message: "は半角6~12文字英大文字・小文字・数字それぞれ1文字以上含む必要があります" }, unless: :oauth_user?
+  validate :check_password, unless: :oauth_user?
   has_one_attached :image
   validates :image, blob: { content_type: :image, size_range: 0..5.megabytes }
   has_many :posts, dependent: :destroy
@@ -42,10 +42,23 @@ class User < ApplicationRecord
     where("name LIKE(?)", "%#{search}%")
   end
 
+  def self.find_or_create_from_oauth(auth)
+    find_or_create_by(provider: auth.provider, uid: auth.uid) do |user|
+      user.name     = auth.info.name
+      user.email    = auth.info.email
+      user.password = generate_guest_password
+      user.password_confirm = user.password
+    end
+  end
+
   def check_password
     return if password == password_confirm
 
     errors.add(:password_confirm, "が一致しません。正しく入力してください")
+  end
+
+  def oauth_user?
+    provider.present?
   end
 
   # バリデーション（英大文字・英小文字・数字を各1文字以上含む）を確実に満たすパスワードを生成する
