@@ -36,22 +36,18 @@ class Post < ApplicationRecord
     likes.exists?(user_id: user.id)
   end
 
-  def self.search(condition)
-    return all if condition.blank_keyword?
-
-    pattern    = condition.like_pattern
-    conditions = ["title LIKE(?) OR address LIKE(?) OR user_name LIKE(?)", pattern, pattern, pattern]
-    where(conditions)
+  # ransack がクエリ生成に使える属性をホワイトリストで制限する。
+  # ここに含まれないカラム（user_id, latitude 等）は検索パラメータに渡されても無視される。
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[title address user_name created_at]
   end
 
-  # 現在のスコープ（ActiveRecord::Relation）をブロックに渡し、
-  # 追加条件を合成して返すスコープ合成ヘルパー。
-  # ブロックが渡されない場合は全件スコープをそのまま返す。
-  #
-  # 例:
-  #   Post.with_filter { |posts| posts.where(user_id: id) }
-  #   Post.with_filter { |posts| posts.latest.limit(10) }
-  #   Post.latest.merge(Post.with_filter { |posts| posts.where(address: "東京") })
+  # ransack がJOINして検索できるアソシエーションを制限する。
+  # user を許可することで「投稿者の経験レベル」等のモデル横断検索が可能になる。
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user likes]
+  end
+
   def self.with_filter(&block)
     block_given? ? yield(all) : all
   end

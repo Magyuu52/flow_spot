@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_05_20_222542) do
+ActiveRecord::Schema[7.0].define(version: 2026_05_20_225936) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,6 +71,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_20_222542) do
     t.float "latitude"
     t.float "longitude"
     t.string "user_name"
+    t.index ["created_at"], name: "index_posts_on_created_at"
+    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "relationships", force: :cascade do |t|
@@ -92,6 +94,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_05_20_222542) do
     t.string "provider"
     t.string "uid"
     t.integer "role", default: 0, null: false
+    t.index ["name"], name: "index_users_on_name"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 

@@ -12,7 +12,8 @@ class PostsController < ApplicationController
 
   def index
     authorize Post
-    @posts       = sorted_posts
+    @q           = Post.ransack(params[:q])
+    @posts       = sorted_posts(@q.result(distinct: true))
     @posts_count = @posts.count
   end
 
@@ -66,19 +67,21 @@ class PostsController < ApplicationController
 
   def search
     authorize Post
-    condition             = PostSearchCondition.new(keyword: params[:keyword]).freeze
-    @searched_posts       = Post.search(condition)
+    @q                    = Post.ransack(params[:q])
+    @searched_posts       = @q.result(distinct: true)
+                              .includes(:user, :likes, :spot_image_attachment,
+                                        user: { image_attachment: :blob })
     @searched_posts_count = @searched_posts.count
   end
 
   private
 
-  def sorted_posts
+  def sorted_posts(scope)
     sort_key = SORT_STRATEGIES.keys.find { |key| params[key] }
     strategy = SORT_STRATEGIES.fetch(sort_key, Posts::SortStrategies::Latest.new)
-    base = Post.includes(:user, :likes, :spot_image_attachment,
-                         user: { image_attachment: :blob })
-    Post.with_filter { |posts| strategy.call(posts.merge(base)) }
+    eager    = scope.includes(:user, :likes, :spot_image_attachment,
+                              user: { image_attachment: :blob })
+    strategy.call(eager)
   end
 
   def post_params

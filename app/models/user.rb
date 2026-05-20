@@ -38,10 +38,14 @@ class User < ApplicationRecord
     Post.joins(:likes).where(likes: { user_id: id })
   end
 
-  def self.search(search)
-    return all if search.blank?
+  # ransack がクエリ生成に使える属性をホワイトリストで制限する。
+  # password, email 等の機密カラムは含めず、情報漏洩・列挙攻撃を防止する。
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[name experience created_at]
+  end
 
-    where("name LIKE(?)", "%#{search}%")
+  def self.ransackable_associations(_auth_object = nil)
+    %w[posts]
   end
 
   def self.find_or_create_from_oauth(auth)

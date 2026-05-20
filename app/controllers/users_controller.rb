@@ -6,7 +6,8 @@ class UsersController < ApplicationController
 
   def index
     authorize User
-    @users = User.includes(image_attachment: :blob)
+    @q     = User.ransack(params[:q])
+    @users = @q.result(distinct: true).includes(image_attachment: :blob)
     @users_count = @users.count
   end
 
@@ -76,8 +77,9 @@ class UsersController < ApplicationController
 
   def search
     authorize User
-    @searched_users       = User.search(params[:keyword])
-    @searched_users_count = @searched_users.where.not(id: @current_user.id).count
+    @q                    = User.ransack(params[:q])
+    @searched_users       = @q.result(distinct: true).includes(image_attachment: :blob)
+    @searched_users_count = @searched_users.where.not(id: @current_user&.id).count
   end
 
   private
