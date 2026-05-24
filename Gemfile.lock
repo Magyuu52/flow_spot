@@ -130,6 +130,8 @@ GEM
       logger
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
+    faraday-retry (2.4.0)
+      faraday (~> 2.0)
     ffi (1.16.3)
     geocoder (1.8.2)
     globalid (1.2.1)
@@ -398,6 +400,8 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
+  faraday
+  faraday-retry
   geocoder
   i18n_generators
   image_processing (~> 1.2)

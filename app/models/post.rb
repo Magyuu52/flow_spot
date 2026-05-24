@@ -17,7 +17,7 @@ class Post < ApplicationRecord
   validates :spot_image, blob: { content_type: :image }
   validates :flow_video, blob: { content_type: :video, size_range: 1..50.megabytes }
   geocoded_by :address
-  after_validation :geocode
+  after_validation :geocode_with_client, if: :address_changed?
   belongs_to :user
   has_many :likes, dependent: :destroy
   has_many :liked_users, through: :likes, source: :user
@@ -50,5 +50,20 @@ class Post < ApplicationRecord
 
   def self.with_filter(&block)
     block_given? ? yield(all) : all
+  end
+
+  private
+
+  # GoogleMapsClient のリトライ付きジオコーディングを利用する。
+  # Geocoder gem の geocode メソッドの代わりに、Faraday 経由で API を呼び出し
+  # タイムアウト・5xx に対して exponential backoff でリトライする。
+  def geocode_with_client(client: GoogleMapsClient.new)
+    result = client.geocode(address)
+    self.latitude  = result[:lat]
+    self.longitude = result[:lng]
+  rescue GoogleMapsClient::ApiError => e
+    Rails.logger.warn("[Post#geocode] #{e.message}")
+    errors.add(:address, "の位置情報を取得できませんでした。しばらくしてから再度お試しください")
+    throw :abort
   end
 end

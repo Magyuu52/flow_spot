@@ -67,6 +67,10 @@ gem "pundit"
 # 複合条件検索
 gem "ransack"
 
+# HTTP クライアント（外部API通信のタイムアウト・リトライ制御）
+gem "faraday"
+gem "faraday-retry"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
