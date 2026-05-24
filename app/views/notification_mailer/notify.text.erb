@@ -1,0 +1,10 @@
+<%= @recipient.name %> さん
+
+<% case @notifiable %>
+<% when Like %>
+<%= @notifiable.user.name %> さんがあなたの投稿「<%= @notifiable.post.title %>」にいいねしました。
+<% when Relationship %>
+<%= @notifiable.follower.name %> さんがあなたをフォローしました。
+<% end %>
+
+FLOW SPOT でチェックしましょう！
