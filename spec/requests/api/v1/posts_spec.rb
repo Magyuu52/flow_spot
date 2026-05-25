@@ -21,17 +21,10 @@ RSpec.describe "Api::V1::Posts", type: :request do
       end
     end
 
-    context "トークンなしの場合" do
-      it "401が返される" do
-        get api_v1_posts_path, as: :json
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "無効なトークンの場合" do
-      it "401が返される" do
-        get api_v1_posts_path, headers: { "Authorization" => "Bearer invalid_token" }, as: :json
-        expect(response).to have_http_status(:unauthorized)
+    it_behaves_like "requires valid JWT" do
+      let(:request_without_token) { get api_v1_posts_path, as: :json }
+      let(:request_with_invalid_token) do
+        get api_v1_posts_path, headers: { "Authorization" => "Bearer invalid" }, as: :json
       end
     end
   end
@@ -52,10 +45,10 @@ RSpec.describe "Api::V1::Posts", type: :request do
       end
     end
 
-    context "トークンなしの場合" do
-      it "401が返される" do
-        get api_v1_post_path(posts.first), as: :json
-        expect(response).to have_http_status(:unauthorized)
+    it_behaves_like "requires valid JWT" do
+      let(:request_without_token) { get api_v1_post_path(posts.first), as: :json }
+      let(:request_with_invalid_token) do
+        get api_v1_post_path(posts.first), headers: { "Authorization" => "Bearer invalid" }, as: :json
       end
     end
   end

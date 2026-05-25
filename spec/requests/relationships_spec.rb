@@ -5,19 +5,20 @@ require "rails_helper"
 RSpec.describe "Relationships", type: :request do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
+  let(:referer_headers) { { "HTTP_REFERER" => user_path(other_user) } }
 
   describe "POST /users/:user_id/relationships" do
     context "ログイン済みの場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
 
       it "フォロー関係が作成される" do
         expect {
-          post user_relationships_path(other_user), headers: { "HTTP_REFERER" => user_path(other_user) }
+          post user_relationships_path(other_user), headers: referer_headers
         }.to change(Relationship, :count).by(1)
       end
 
       it "リファラーへリダイレクトされる" do
-        post user_relationships_path(other_user), headers: { "HTTP_REFERER" => user_path(other_user) }
+        post user_relationships_path(other_user), headers: referer_headers
         expect(response).to redirect_to(user_path(other_user))
       end
     end
@@ -33,11 +34,11 @@ RSpec.describe "Relationships", type: :request do
     before { user.follow(other_user.id) }
 
     context "ログイン済みの場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
 
       it "フォロー関係が削除される" do
         expect {
-          delete user_relationships_path(other_user), headers: { "HTTP_REFERER" => user_path(other_user) }
+          delete user_relationships_path(other_user), headers: referer_headers
         }.to change(Relationship, :count).by(-1)
       end
     end

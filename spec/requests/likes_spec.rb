@@ -5,19 +5,20 @@ require "rails_helper"
 RSpec.describe "Likes", type: :request do
   let(:user) { create(:user) }
   let(:post_record) { create(:post) }
+  let(:referer_headers) { { "HTTP_REFERER" => post_path(post_record) } }
 
   describe "POST /posts/:post_id/likes" do
     context "ログイン済みの場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
 
       it "いいねが作成される" do
         expect {
-          post post_likes_path(post_record), headers: { "HTTP_REFERER" => post_path(post_record) }
+          post post_likes_path(post_record), headers: referer_headers
         }.to change(Like, :count).by(1)
       end
 
       it "リファラーへリダイレクトされる" do
-        post post_likes_path(post_record), headers: { "HTTP_REFERER" => post_path(post_record) }
+        post post_likes_path(post_record), headers: referer_headers
         expect(response).to redirect_to(post_path(post_record))
       end
 
@@ -40,11 +41,11 @@ RSpec.describe "Likes", type: :request do
     before { create(:like, user: user, post: post_record) }
 
     context "ログイン済みの場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
 
       it "いいねが削除される" do
         expect {
-          delete post_likes_path(post_record), headers: { "HTTP_REFERER" => post_path(post_record) }
+          delete post_likes_path(post_record), headers: referer_headers
         }.to change(Like, :count).by(-1)
       end
 

@@ -29,12 +29,10 @@ RSpec.describe "Users", type: :request do
     end
 
     context "ログイン済みの場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
+      before { get new_user_path }
 
-      it "トップページへリダイレクトされる" do
-        get new_user_path
-        expect(response).to redirect_to(root_path)
-      end
+      it_behaves_like "forbids logged-in users"
     end
   end
 
@@ -85,7 +83,7 @@ RSpec.describe "Users", type: :request do
 
   describe "GET /users/:id/edit" do
     context "本人の場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
 
       it "編集フォームが表示される" do
         get edit_user_path(user)
@@ -94,12 +92,10 @@ RSpec.describe "Users", type: :request do
     end
 
     context "他のユーザーの場合" do
-      before { login_as(other_user) }
+      include_context "authenticated as other user"
+      before { get edit_user_path(user) }
 
-      it "アクセスが拒否される" do
-        get edit_user_path(user)
-        expect(response).to redirect_to(root_path)
-      end
+      it_behaves_like "denies access to non-owner"
     end
 
     context "未ログインの場合" do
@@ -111,7 +107,7 @@ RSpec.describe "Users", type: :request do
 
   describe "PATCH /users/:id" do
     context "本人の場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
 
       it "プロフィールが更新される" do
         patch user_path(user), params: { user: { name: "更新名前" } }
@@ -125,7 +121,7 @@ RSpec.describe "Users", type: :request do
     end
 
     context "他のユーザーの場合" do
-      before { login_as(other_user) }
+      include_context "authenticated as other user"
 
       it "更新が拒否される" do
         patch user_path(user), params: { user: { name: "不正更新" } }
@@ -143,12 +139,10 @@ RSpec.describe "Users", type: :request do
     end
 
     context "ログイン済みの場合" do
-      before { login_as(user) }
+      include_context "authenticated request"
+      before { get login_path }
 
-      it "トップページへリダイレクトされる" do
-        get login_path
-        expect(response).to redirect_to(root_path)
-      end
+      it_behaves_like "forbids logged-in users"
     end
   end
 
@@ -169,7 +163,7 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "POST /logout" do
-    before { login_as(user) }
+    include_context "authenticated request"
 
     it "ログアウトに成功しトップページへリダイレクトされる" do
       post logout_path
