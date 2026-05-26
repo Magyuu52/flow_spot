@@ -3,12 +3,12 @@
     <h1 class="mb-4 pb-0">FLOW<span> SPOT</span></h1>
     <p class="mb-5 pb-0">FLOW SPOTでお気に入りのパルクールスポットを発見・投稿しよう！</p>
     <% if @current_user %>
-      <%= link_to "スポットを投稿する", new_post_path, class:"top-btn-new" %>
+      <%= link_to react_component("Navigation", { navigation: "スポットを投稿する" }), new_post_path, class:"top-btn-new" %>
     <% else %>
-      <%= link_to "新規登録してスポットを投稿する", new_user_path, class:"top-btn-new" %>
+      <%= link_to react_component("Navigation", { navigation: "新規登録してスポットを投稿する" }), new_user_path, class:"top-btn-new" %>
       <div class="footer-btn-area">
-          <%= link_to "ログインはこちら", login_path, class:"top-btn me-4" %>
-          <%= link_to "ゲストログインはこちら", guest_login_path, data: { turbo_method: :post }, class:"top-btn" %>
+          <%= link_to react_component("Navigation", { navigation: "ログインはこちら" }), login_path, class:"top-btn me-4" %>
+          <%= link_to react_component("Navigation", { navigation: "ゲストログインはこちら" }), guest_login_path, data: { turbo_method: :post }, class:"top-btn" %>
       </div>
     <% end %>
     <section id="search-form">

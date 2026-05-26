@@ -3,6 +3,9 @@ RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -r
 RUN apt-get update && apt-get install -y postgresql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
 
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt-get install -y nodejs
+RUN npm install --global yarn
+
 WORKDIR /flow_spot
 
 ADD Gemfile /flow_spot/Gemfile

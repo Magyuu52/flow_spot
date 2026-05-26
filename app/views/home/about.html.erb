@@ -26,9 +26,9 @@
       <div class="text-center btn-area-lg mt-4">
         <h5>FLOW SPOTを使って、お気に入りのスポットを探しましょう！</h5>
         <% if @current_user %>
-          <%= link_to "新規スポットを投稿する", new_post_path, class:"btn" %>
+          <%= link_to react_component("Navigation", { navigation: "新規スポットを投稿する" }), new_post_path, class:"btn" %>
         <% else %>
-          <%= link_to "新規登録してスポットを投稿する", new_user_path, class:"btn" %>
+          <%= link_to react_component("Navigation", { navigation: "新規登録してスポットを投稿する" }), new_user_path, class:"btn" %>
         <% end %>
       </div>
       <div class="text-center mt-5">
@@ -83,7 +83,7 @@
       </div>
     </div>
     <div class="text-center mt-5">
-      <%= link_to "トップページへ戻る", root_path, class:"btn w-50" %>
+      <%= link_to react_component("Navigation", { navigation: "トップページへ戻る" }), root_path, class:"btn w-50" %>
     </div>
   </div>
 </section>
