@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :posts do
-  desc "住所未登録の投稿をバッチジオコーディング（Thread + Mutex）"
+  desc '住所未登録の投稿をバッチジオコーディング（Thread + Mutex）'
   task geocode_batch: :environment do
     posts   = Post.where(latitude: nil).to_a
     mutex   = Mutex.new

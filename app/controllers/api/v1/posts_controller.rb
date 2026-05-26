@@ -14,7 +14,7 @@ module Api
         authorize post
         render json: post_json(post)
       rescue ActiveRecord::RecordNotFound
-        render json: { error: "投稿が見つかりません" }, status: :not_found
+        render json: { error: '投稿が見つかりません' }, status: :not_found
       end
 
       private

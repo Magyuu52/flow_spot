@@ -12,8 +12,8 @@ RSpec.describe Like, type: :model do
       expect(record).to be_valid
     end
 
-    it_behaves_like "requires belongs_to association", :user
-    it_behaves_like "requires belongs_to association", :post
+    it_behaves_like 'requires belongs_to association', :user
+    it_behaves_like 'requires belongs_to association', :post
   end
 
   describe 'データの一意性' do

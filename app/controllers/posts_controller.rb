@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class PostsController < ApplicationController
-  before_action :authenticate_user, except: [:index, :show, :search]
+  before_action :authenticate_user, except: %i[index show search]
 
   # Duck Typing: 各値は「call(scope) に応答できる」ことだけを保証する。
   # 呼び出し側（sorted_posts）はオブジェクトの種別を知らず、call するだけでよい。
   SORT_STRATEGIES = {
-    "old"            => Posts::SortStrategies::Old.new,
-    "most_favorited" => Posts::SortStrategies::MostFavorited.new,
+    'old' => Posts::SortStrategies::Old.new,
+    'most_favorited' => Posts::SortStrategies::MostFavorited.new
   }.freeze
 
   def index
@@ -17,8 +17,19 @@ class PostsController < ApplicationController
     @posts_count = @posts.count
   end
 
+  def show
+    @post = Post.find(params[:id])
+    authorize @post
+    @likes_count = @post.likes_count
+  end
+
   def new
     @post = Post.new
+    authorize @post
+  end
+
+  def edit
+    @post = Post.find(params[:id])
     authorize @post
   end
 
@@ -27,22 +38,11 @@ class PostsController < ApplicationController
     service = Posts::CreateService.new(user: @current_user, params: post_params)
     @post   = service.call
     if @post.save
-      flash[:notice] = "新規投稿の作成に成功しました"
+      flash[:notice] = '新規投稿の作成に成功しました'
       redirect_to :posts
     else
-      render "new", status: :unprocessable_entity
+      render 'new', status: :unprocessable_entity
     end
-  end
-
-  def show
-    @post = Post.find(params[:id])
-    authorize @post
-    @likes_count = @post.likes_count
-  end
-
-  def edit
-    @post = Post.find(params[:id])
-    authorize @post
   end
 
   def update
@@ -53,7 +53,7 @@ class PostsController < ApplicationController
       flash[:notice] = "「#{@post.title}」の情報を更新しました"
       redirect_to :posts
     else
-      render "edit", status: :unprocessable_entity
+      render 'edit', status: :unprocessable_entity
     end
   end
 

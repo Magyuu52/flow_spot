@@ -3,10 +3,10 @@
 class Post < ApplicationRecord
   scope :latest, -> { order(created_at: :desc) }
   scope :old, -> { order(created_at: :asc) }
-  scope :most_favorited, -> {
+  scope :most_favorited, lambda {
     left_joins(:likes)
-      .group("posts.id")
-      .order("COUNT(likes.id) DESC")
+      .group('posts.id')
+      .order('COUNT(likes.id) DESC')
   }
   validates :title, { presence: true, length: { maximum: 30 } }
   validates :content, length: { maximum: 500 }
@@ -15,7 +15,7 @@ class Post < ApplicationRecord
   has_one_attached :spot_image
   has_one_attached :flow_video
   validates :spot_image, blob: { content_type: :image }
-  validates :flow_video, blob: { content_type: :video, size_range: 1..50.megabytes }
+  validates :flow_video, blob: { content_type: :video, size_range: 1..(50.megabytes) }
   geocoded_by :address
   after_validation :geocode_with_client, if: :address_changed?
   belongs_to :user
@@ -28,9 +28,7 @@ class Post < ApplicationRecord
     self.user_name = user.name
   end
 
-  def likes_count
-    likes.count
-  end
+  delegate :count, to: :likes, prefix: true
 
   def liked?(user)
     likes.exists?(user_id: user.id)
@@ -48,7 +46,7 @@ class Post < ApplicationRecord
     %w[user likes]
   end
 
-  def self.with_filter(&block)
+  def self.with_filter
     block_given? ? yield(all) : all
   end
 
@@ -63,7 +61,7 @@ class Post < ApplicationRecord
     self.longitude = result[:lng]
   rescue GoogleMapsClient::ApiError => e
     Rails.logger.warn("[Post#geocode] #{e.message}")
-    errors.add(:address, "の位置情報を取得できませんでした。しばらくしてから再度お試しください")
+    errors.add(:address, 'の位置情報を取得できませんでした。しばらくしてから再度お試しください')
     throw :abort
   end
 end

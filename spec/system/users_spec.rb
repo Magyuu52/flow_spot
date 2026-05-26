@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Users", type: :system do
+RSpec.describe 'Users', type: :system do
   describe 'ユーザー新規登録' do
     context '入力情報が正しい場合' do
       it 'ユーザーの新規登録に成功すること' do
@@ -37,7 +39,7 @@ RSpec.describe "Users", type: :system do
     before do
       login(user)
     end
-    
+
     it '自分のプロフィール画面に編集ボタンが表示されること' do
       visit user_path(user.id)
       within '.user-plofile' do
@@ -54,7 +56,7 @@ RSpec.describe "Users", type: :system do
 
     it 'プロフィールを更新できること' do
       visit edit_user_path(user.id)
-      attach_file 'user[image]', "spec/fixtures/image/test_user.png"
+      attach_file 'user[image]', 'spec/fixtures/image/test_user.png'
       fill_in '名前', with: 'new-testuser'
       fill_in 'メールアドレス', with: 'newemail@example.com'
       fill_in 'パスワード', with: 'Newpassword1'

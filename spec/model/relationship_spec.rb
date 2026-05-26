@@ -10,8 +10,8 @@ RSpec.describe Relationship, type: :model do
       expect(record).to be_valid
     end
 
-    it_behaves_like "requires belongs_to association", :follower
-    it_behaves_like "requires belongs_to association", :followed
+    it_behaves_like 'requires belongs_to association', :follower
+    it_behaves_like 'requires belongs_to association', :followed
   end
 
   describe 'データの一意性' do

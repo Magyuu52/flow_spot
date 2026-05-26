@@ -17,11 +17,11 @@ class NotificationMailer < ApplicationMailer
   def notification_subject
     case @notifiable
     when Like
-      "あなたの投稿にいいねがつきました"
+      'あなたの投稿にいいねがつきました'
     when Relationship
-      "新しいフォロワーがいます"
+      '新しいフォロワーがいます'
     else
-      "新しい通知があります"
+      '新しい通知があります'
     end
   end
 end

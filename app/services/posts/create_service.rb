@@ -10,7 +10,7 @@ module Posts
   class CreateService
     attr_reader :post
 
-    DEFAULT_IMAGE_PROCESSOR = ->(tempfile) {
+    DEFAULT_IMAGE_PROCESSOR = lambda { |tempfile|
       ImageProcessing::MiniMagick
         .source(tempfile)
         .resize_to_fill(1627, 1084.5)

@@ -10,9 +10,9 @@ RSpec.describe User, type: :model do
       expect(record).to be_valid
     end
 
-    it_behaves_like "validates presence of", :name
-    it_behaves_like "validates presence of", :email
-    it_behaves_like "validates presence of", :password
+    it_behaves_like 'validates presence of', :name
+    it_behaves_like 'validates presence of', :email
+    it_behaves_like 'validates presence of', :password
 
     describe '名前' do
       it '20文字を超える場合は無効であること' do
@@ -23,23 +23,23 @@ RSpec.describe User, type: :model do
 
     describe 'メールアドレス' do
       it '「@」がない場合は無効であること' do
-        record.email = "aaa"
+        record.email = 'aaa'
         expect(record).to be_invalid
       end
 
       it '「@」が二つある場合は無効であること' do
-        record.email = "a@@a"
+        record.email = 'a@@a'
         expect(record).to be_invalid
       end
 
       it '途中に空白がある場合は無効であること' do
-        record.email = "a @a"
+        record.email = 'a @a'
         expect(record).to be_invalid
       end
 
       it '重複している場合は無効であること' do
-        create(:user, email: "dup@example.com")
-        record.email = "dup@example.com"
+        create(:user, email: 'dup@example.com')
+        record.email = 'dup@example.com'
         expect(record).to be_invalid
       end
     end
@@ -96,7 +96,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'ファイルサイズが5MBを超える場合は無効であること' do
-        record.image = fixture_file_upload("spec/fixtures/image/test_user_invalid.png")
+        record.image = fixture_file_upload('spec/fixtures/image/test_user_invalid.png')
         expect(record).to be_invalid
       end
     end

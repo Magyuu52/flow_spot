@@ -11,8 +11,8 @@ class PostRateLimitValidator < ActiveModel::Validator
                          .where(created_at: 1.hour.ago..)
                          .count
 
-    if recent_count >= MAX_POSTS_PER_HOUR
-      record.errors.add(:base, "投稿頻度が上限を超えています。しばらく待ってから再度お試しください")
-    end
+    return unless recent_count >= MAX_POSTS_PER_HOUR
+
+    record.errors.add(:base, '投稿頻度が上限を超えています。しばらく待ってから再度お試しください')
   end
 end

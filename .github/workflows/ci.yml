@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   lint:
@@ -36,6 +36,7 @@ jobs:
       DATABASE_URL: postgres://postgres:password@localhost:5432/flow_spot_test
       RAILS_ENV: test
       GOOGLE_MAP_API_KEY: test_dummy_key
+      SECRET_KEY_BASE: test_secret_key_base_for_ci_only
 
     steps:
       - uses: actions/checkout@v4

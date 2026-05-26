@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   rescue_from AuthenticationError,  with: :handle_authentication_error
   rescue_from AuthorizationError,   with: :handle_authorization_error
   rescue_from Pundit::NotAuthorizedError, with: :handle_authorization_error
-  rescue_from GuestOperationError,  with: :handle_guest_operation_error
+  rescue_from GuestOperationError, with: :handle_guest_operation_error
   rescue_from ActiveSupport::MessageVerifier::InvalidSignature, with: :handle_invalid_token
 
   def set_current_user
@@ -16,9 +16,7 @@ class ApplicationController < ActionController::Base
   end
 
   # Pundit は pundit_user（デフォルトで current_user）を認可判定の主体として使う
-  def current_user
-    @current_user
-  end
+  attr_reader :current_user
 
   def authenticate_user
     raise AuthenticationError unless @current_user
@@ -27,7 +25,7 @@ class ApplicationController < ActionController::Base
   def forbid_login_user
     return unless @current_user
 
-    flash[:alert] = "すでにログイン済みです"
+    flash[:alert] = 'すでにログイン済みです'
     redirect_to root_path
   end
 
@@ -36,25 +34,25 @@ class ApplicationController < ActionController::Base
   def handle_authentication_error
     respond_to do |format|
       format.html do
-        flash[:alert] = "ログインが必要です"
-        redirect_to "/login"
+        flash[:alert] = 'ログインが必要です'
+        redirect_to '/login'
       end
-      format.json { render json: { error: "ログインが必要です" }, status: :unauthorized }
+      format.json { render json: { error: 'ログインが必要です' }, status: :unauthorized }
     end
   end
 
   def handle_authorization_error
-    flash[:alert] = "アクセス権限がありません"
+    flash[:alert] = 'アクセス権限がありません'
     redirect_to root_path
   end
 
   def handle_guest_operation_error
-    flash[:alert] = "ゲストユーザーはこの操作を行えません"
+    flash[:alert] = 'ゲストユーザーはこの操作を行えません'
     redirect_to root_path
   end
 
   def handle_invalid_token
-    flash[:alert] = "URLの有効期限が切れています。もう一度申請をお願いします"
+    flash[:alert] = 'URLの有効期限が切れています。もう一度申請をお願いします'
     redirect_to password_reset_path
   end
 

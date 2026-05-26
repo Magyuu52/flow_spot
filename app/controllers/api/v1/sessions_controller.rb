@@ -10,7 +10,7 @@ module Api
           token = JwtService.encode({ user_id: user.id })
           render json: { token: token, user: { id: user.id, name: user.name, email: user.email } }
         else
-          render json: { error: "メールアドレスまたはパスワードが正しくありません" }, status: :unauthorized
+          render json: { error: 'メールアドレスまたはパスワードが正しくありません' }, status: :unauthorized
         end
       end
     end

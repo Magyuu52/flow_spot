@@ -12,8 +12,8 @@ RSpec.describe Post, type: :model do
       expect(saved).to be_valid
     end
 
-    it_behaves_like "validates presence of", :title
-    it_behaves_like "validates presence of", :address
+    it_behaves_like 'validates presence of', :title
+    it_behaves_like 'validates presence of', :address
 
     describe 'タイトル' do
       it '30文字を超える場合は無効であること' do
@@ -45,7 +45,7 @@ RSpec.describe Post, type: :model do
       end
 
       it 'ファイルサイズが50MBを超える場合は無効であること' do
-        record.flow_video = fixture_file_upload("spec/fixtures/video/test_post_invalid.mp4")
+        record.flow_video = fixture_file_upload('spec/fixtures/video/test_post_invalid.mp4')
         expect(record).to be_invalid
       end
     end

@@ -2,7 +2,7 @@
 
 module RequestHelpers
   def login_as(user)
-    post "/login", params: { email: user.email, password: user.password }
+    post '/login', params: { email: user.email, password: user.password }
   end
 
   def json_response
@@ -11,6 +11,6 @@ module RequestHelpers
 
   def auth_header(user)
     token = JwtService.encode({ user_id: user.id })
-    { "Authorization" => "Bearer #{token}" }
+    { 'Authorization' => "Bearer #{token}" }
   end
 end
