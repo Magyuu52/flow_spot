@@ -19,6 +19,7 @@ development:
 test:
   <<: *default
   database: flow_spot_test
+  url: <%= ENV['DATABASE_URL'] %>
 
 production:
   <<: *default

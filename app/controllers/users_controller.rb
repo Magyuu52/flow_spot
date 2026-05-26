@@ -1,21 +1,28 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
-  before_action :authenticate_user, {only: [:edit, :update]}
-  before_action :forbid_login_user, {only: [:new, :login_form, :login]}
-  before_action :ensure_correct_user, {only: [:edit, :update]}
+  before_action :authenticate_user, only: [:edit, :update]
+  before_action :forbid_login_user, only: [:new, :login_form, :login]
 
   def index
-    @users = User.all
+    authorize User
+    @q     = User.ransack(params[:q])
+    @users = @q.result(distinct: true).includes(image_attachment: :blob)
     @users_count = @users.count
   end
 
   def new
     @user = User.new
+    authorize @user
   end
 
   def create
-    @user = User.new(params.require(:user).permit(:name, :email, :password, :password_confirm, :introduction))
-    if @user.save
-      session[:user_id] = @user.id
+    @user = User.new
+    authorize @user
+    service = Users::RegistrationService.new(params: registration_params)
+    @user   = service.user
+    if service.call
+      log_in(@user)
       flash[:notice] = "ユーザーの新規登録に成功しました"
       redirect_to root_path
     else
@@ -25,20 +32,23 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @user_posts_count = @user.posts.count
-    @user_liked_posts = Like.where(user_id: @user.id)
+    authorize @user
+    @user_posts_count       = @user.posts.count
+    @user_liked_posts       = @user.liked_posts
     @user_liked_posts_count = @user_liked_posts.count
   end
 
   def edit
     @user = User.find(params[:id])
+    authorize @user
   end
 
   def update
     @user = User.find(params[:id])
-    if @current_user.update(params.require(:user).permit(:name, :introduction, :password, :password_confirm, :experience, :image))
+    authorize @user
+    if @user.update(profile_params)
       flash[:notice] = "アカウント情報を更新しました"
-      redirect_to action: :show
+      redirect_to user_path(@user)
     else
       render "edit", status: :unprocessable_entity
     end
@@ -48,9 +58,9 @@ class UsersController < ApplicationController
   end
 
   def login
-    @user = User.find_by(email: params[:email], password: params[:password]) 
-    if @user
-      session[:user_id] = @user.id
+    service = Users::AuthenticationService.new(email: params[:email], password: params[:password])
+    if service.call
+      log_in(service.user)
       flash[:notice] = "ログインに成功しました"
       redirect_to root_path
     else
@@ -60,20 +70,25 @@ class UsersController < ApplicationController
   end
 
   def logout
-    session[:user_id] = nil
+    log_out
     flash[:notice] = "ログアウトに成功しました"
     redirect_to root_path
   end
 
   def search
-    @searched_users = User.search(params[:keyword])
-    @searched_users_count = @searched_users.where.not(id: @current_user.id).count
+    authorize User
+    @q                    = User.ransack(params[:q])
+    @searched_users       = @q.result(distinct: true).includes(image_attachment: :blob)
+    @searched_users_count = @searched_users.where.not(id: @current_user&.id).count
   end
 
-  def ensure_correct_user
-    if @current_user.id != params[:id].to_i
-      flash[:alret] = "アクセス権限がありません"
-      redirect_to root_path
-    end
+  private
+
+  def registration_params
+    params.require(:user).permit(:name, :email, :password, :password_confirm, :introduction)
+  end
+
+  def profile_params
+    params.require(:user).permit(:name, :introduction, :password, :password_confirm, :experience, :image)
   end
 end

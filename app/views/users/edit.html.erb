@@ -41,7 +41,7 @@
           </div>
           <div class="form-group col-md-6 mt-3">
             <%= f.label :experience, "経験年数", class:"mb-3" %>
-            <%= f.select :experience, ["設定しない", "〜3ヶ月", "3〜6ヶ月", "6〜9ヶ月", "9ヶ月〜1年", "1〜2年", "2〜3年", "3年以上"], {}, class:"form-control #{ "guest-limit" if @current_user.id == Constants::GUEST_USER_ID }" %>
+            <%= f.select :experience, Constants::VALID_EXPERIENCE_OPTIONS, {}, class:"form-control #{ "guest-limit" if @current_user.id == Constants::GUEST_USER_ID }" %>
           </div>
         </div>
         <div class="form-group mt-3">

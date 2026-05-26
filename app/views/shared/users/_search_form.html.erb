@@ -1,11 +1,9 @@
 <section id="search-form">
   <div class="container aos-init aos-animate" data-aos="zoom-in">
-    <%= form_with(url: search_users_path, local: true, method: :get ) do |f| %>
-      <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-10 d-flex">
-          <%= f.text_field :keyword, class:"form-control", placeholder:"ユーザー名を入力" %>
-          <%= f.button "検索", :type => "submit", class:"ms-2" %>
-        </div>
+    <%= search_form_for(@q, url: search_users_path, method: :get) do |f| %>
+      <div class="d-flex align-items-center justify-content-center">
+        <%= f.search_field :name_cont, placeholder: "ユーザー名を入力" %>
+        <%= f.submit "検索" %>
       </div>
     <% end %>
   </div>

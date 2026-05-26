@@ -1,7 +1,12 @@
 <div role="tabpanel" class="col-lg-9 tab-pane fade show active" id="table-1">
   <p>投稿数: <%= user_posts_count %>件</p>
   <% user.posts.each do |post| %>
-    <div class="table-item">
+    <div class="table-item"
+         data-controller="like"
+         data-like-url-value="<%= post_likes_path(post.id) %>"
+         data-like-liked-value="<%= !!current_user && post.liked?(current_user) %>"
+         data-like-count-value="<%= post.likes_count %>"
+         data-like-signed-in-value="<%= !!current_user %>">
       <div class="d-flex mb-2 align-items-center">
         <%= link_to user_path(post.user) do %>
           <% if post.user.image.attached? %>
@@ -39,45 +44,28 @@
           <div class="d-flex justify-content-between align-items-center">
             <div class="contents-area">
               <h4><%= post.title %></h4>
-              <% if current_user && post.liked?(current_user) %>
-                <%= link_to post_likes_path(post.id), data: { "turbo-method": :delete } do %>
-                  <div class="align-items-center d-flex">
-                    <span class="fa fa-thumbs-up fa-lg"></span>
-                    <p class="ms-2 fs-4"><%= post.likes_count %></p>
-                  </div>
-                <% end %>
-              <% else %>
-                <%= link_to post_likes_path(post.id), data: { "turbo-method": :post } do %>
-                  <div class="align-items-center d-flex not-liked">
-                    <span class="fa fa-thumbs-up fa-lg"></span>
-                    <p class="ms-2 fs-4"><%= post.likes_count %></p>
-                  </div>
-                <% end %>
-              <% end %>
+              <a href="#" data-action="click->like#toggle">
+                <div class="align-items-center d-flex<%= ' not-liked' unless current_user && post.liked?(current_user) %>" data-like-target="icon">
+                  <span class="fa fa-thumbs-up fa-lg"></span>
+                  <p class="ms-2 fs-4" data-like-target="count"><%= post.likes_count %></p>
+                </div>
+              </a>
             </div>
             <div class="btn-area-large text-center">
-              <% if current_user %>
-                <% if post.liked?(current_user) %>
-                  <%= link_to "いいね済み", post_likes_path(post.id), data: { "turbo-method": :delete }, class:"btn-1 text-center" %>
-                <% else %>
-                  <%= link_to "いいねする", post_likes_path(post.id), data: { "turbo-method": :post }, class:"btn-2 text-center" %>
-                <% end %>
-              <% else %>
-                <%= link_to "いいねする", post_likes_path(post.id), data: { "turbo-method": :post }, class:"btn-2 text-center" %>
-              <% end %>
+              <a href="#" data-action="click->like#toggle"
+                 data-like-target="buttonText"
+                 class="<%= current_user && post.liked?(current_user) ? 'btn-1' : 'btn-2' %> text-center">
+                <%= current_user && post.liked?(current_user) ? "いいね済み" : "いいねする" %>
+              </a>
               <%= link_to "スポット詳細へ", post_path(post), class:"btn-1 mt-1" %>
             </div>
           </div>
           <div class="btn-area-small text-center">
-            <% if current_user %>
-              <% if post.liked?(current_user) %>
-                <%= link_to "いいね済み", post_likes_path(post.id), data: { "turbo-method": :delete }, class:"btn-1 text-center" %>
-              <% else %>
-                <%= link_to "いいねする", post_likes_path(post.id), data: { "turbo-method": :post }, class:"btn-2 text-center" %>
-              <% end %>
-            <% else %>
-              <%= link_to "いいねする", post_likes_path(post.id), data: { "turbo-method": :post }, class:"btn-2 text-center" %>
-            <% end %>
+            <a href="#" data-action="click->like#toggle"
+               data-like-target="buttonText"
+               class="<%= current_user && post.liked?(current_user) ? 'btn-1' : 'btn-2' %> text-center">
+              <%= current_user && post.liked?(current_user) ? "いいね済み" : "いいねする" %>
+            </a>
             <%= link_to "スポット詳細へ", post_path(post), class:"btn-1 ms-1" %>
           </div>
         </div>

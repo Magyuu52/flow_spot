@@ -1,0 +1,18 @@
+require:
+  - rubocop-rails
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.0
+  Exclude:
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+
+# Time.now ではなく Time.current を使うことを強制する。
+# Time.now はサーバーの OS タイムゾーンを返し、config.time_zone を無視するため、
+# Asia/Tokyo 設定下では 9 時間のズレが生じる可能性がある。
+Rails/TimeZone:
+  Enabled: true

@@ -15,6 +15,10 @@ Rails.application.routes.draw do
   post 'logout' => 'users#logout'
 
   post 'guest_login' => 'guest_sessions#create'
+
+  # OAuth
+  get  "/auth/:provider/callback", to: "oauth_sessions#create"
+  get  "/auth/failure",            to: "oauth_sessions#failure"
   get 'password/reset' => 'password_resets#new'
   post 'password/reset' => 'password_resets#create'
   get 'password/reset/edit' => "password_resets#edit"
@@ -27,8 +31,11 @@ Rails.application.routes.draw do
       get 'search' => 'posts#search'
     end
   end
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  # JWT 認証 API（モバイル / SPA クライアント用）
+  namespace :api do
+    namespace :v1 do
+      resources :sessions, only: [:create]
+      resources :posts, only: [:index, :show]
+    end
+  end
 end
