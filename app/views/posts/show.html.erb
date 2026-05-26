@@ -37,13 +37,18 @@
           <div id="map"></div>
         </div>
       </div>
-      <div class="post-likes-area mt-3">
-        <p class="me-5 fs-4">いいね数: <%= @post.likes_count %></p>
-        <% if @current_user && @post.liked?(@current_user) %>
-          <%= link_to "いいね済み", post_likes_path(@post.id), data: { "turbo-method": :delete }, class:"btn-1 ms-4" %>
-        <% else %>
-          <%= link_to "いいねする", post_likes_path(@post.id), data: { "turbo-method": :post }, class:"btn-2 ms-4" %>
-        <% end %>
+      <div class="post-likes-area mt-3"
+           data-controller="like"
+           data-like-url-value="<%= post_likes_path(@post.id) %>"
+           data-like-liked-value="<%= !!@current_user && @post.liked?(@current_user) %>"
+           data-like-count-value="<%= @post.likes_count %>"
+           data-like-signed-in-value="<%= !!@current_user %>">
+        <p class="me-5 fs-4">いいね数: <span data-like-target="count"><%= @post.likes_count %></span></p>
+        <a href="#" data-action="click->like#toggle"
+           data-like-target="buttonText"
+           class="<%= @current_user && @post.liked?(@current_user) ? 'btn-1' : 'btn-2' %> ms-4">
+          <%= @current_user && @post.liked?(@current_user) ? "いいね済み" : "いいねする" %>
+        </a>
       </div>
       <div class="row d-flex justify-content-between">
         <div class="col-md-6">

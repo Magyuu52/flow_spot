@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :post do
     title { 'test-post' }
@@ -6,7 +8,7 @@ FactoryBot.define do
     user
 
     after(:build) do |post|
-      post.spot_image.attach(io: File.open("spec/fixtures/image/test_post.jpg"), filename: "test_post.jpg")
+      post.spot_image.attach(io: File.open('spec/fixtures/image/test_post.jpg'), filename: 'test_post.jpg')
     end
   end
 end

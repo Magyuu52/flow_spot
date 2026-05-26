@@ -1,0 +1,46 @@
+require:
+  - rubocop-rails
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.0
+  SuggestExtensions: false
+  Exclude:
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'test/**/*'
+
+Rails/TimeZone:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/tasks/**/*'
+
+Metrics/MethodLength:
+  Max: 12
+  Exclude:
+    - 'lib/tasks/**/*'
+    - 'app/services/**/*'
+
+Metrics/AbcSize:
+  Max: 20
+  Exclude:
+    - 'lib/tasks/**/*'
+
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'lib/tasks/**/*'
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false

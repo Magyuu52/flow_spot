@@ -78,12 +78,18 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-  # Use a different logger for distributed setups.
-  # require "syslog/logger"
-  # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new "app-name")
-
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+    # Heroku 等の PaaS ではログは STDOUT に出力し、プラットフォーム側で収集・保管する
+    logger           = ActiveSupport::Logger.new($stdout)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  else
+    # 自前サーバーの場合: ファイルにログローテーション付きで出力する
+    # 第2引数 = 世代数（1 = 現在 + 1世代の計2ファイル保持）
+    # 第3引数 = 1ファイルの最大サイズ（50MB に達したら新ファイルに切り替え）
+    logger           = ActiveSupport::Logger.new(
+      config.paths["log"].first, 1, 50.megabytes
+    )
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
