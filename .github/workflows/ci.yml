@@ -50,7 +50,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libpq-dev imagemagick libvips
 
       - name: Setup database
-        run: bundle exec rails db:schema:load
+        run: bundle exec rails db:create db:schema:load
 
       - name: Run model specs
         run: bundle exec rspec spec/model/ --format documentation
