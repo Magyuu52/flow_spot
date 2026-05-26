@@ -1,5 +1,4 @@
 {
-  "packageManager": "npm@10.7.0",
   "name": "app",
   "private": true,
   "version": "0.1.0",
